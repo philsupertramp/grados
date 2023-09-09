@@ -1,0 +1,5 @@
+*.pyc
+tags
+.idea/
+
+.ipynb_checkpoints/

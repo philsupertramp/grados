@@ -1,0 +1,20 @@
+[tool.poetry]
+name = "grados"
+version = "0.1.0"
+description = ""
+authors = ["Philipp Zettl"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = ">=3.10,<4.0"
+numpy = "^1.25.2"
+matplotlib = "^3.7.2"
+
+
+[tool.poetry.group.dev.dependencies]
+jupyter = "^1.0.0"
+notebook = "^7.0.3"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
