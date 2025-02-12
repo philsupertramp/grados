@@ -18,14 +18,17 @@ class Value:
         self.label = label
 
     def __repr__(self):
-        return f"Value(data={self.data})"
+        return f"Value(data={self.data}, grad={self.grad}, op={self._op}, label={self.label}, child={self._prev})"
 
     @cast_other_value
     def __add__(self, other):
         out = Value(self.data + other.data, (self, other), '+')
         def _backward():
+            #print(f'ADD: {self.grad} ->', end='')
             self.grad += 1.0 * out.grad
+            #print(f' {self.grad}; {other.grad} -> ', end='')
             other.grad += 1.0 * out.grad
+            #print(f'{other.grad} ', end='')
         
         out._backward = _backward
         return out
@@ -34,8 +37,11 @@ class Value:
     def __mul__(self, other):
         out = Value(self.data * other.data, (self, other), '*')
         def _backward():
+            #print(f'MM: {out.grad}; {self.grad} ->', end='')
             self.grad += other.data * out.grad
+            #print(f' {self.grad}; {other.grad} -> ', end='')
             other.grad += self.data * out.grad
+            #print(f'{other.grad} ', end='')
 
         out._backward = _backward
         return out
@@ -96,10 +102,14 @@ class Value:
                 visited.add(v)
                 for c in v._prev:
                     build_topo(c)
+
                 topo.append(v)
+                #print(f'Added {v}')
         build_topo(self)
 
         self.grad = 1.0
         for node in reversed(topo):
+            #print(f'Running for {node}: {node.grad} -> ', end='')
             node._backward()
+            #print(f'{node.grad}')
 
